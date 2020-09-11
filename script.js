@@ -69,15 +69,22 @@ function getQuestion() {
     var Display = [];
     var answersArrayLength = 4;
     // Creating HTML form with radio buttons in order to validate and then store user data.
+    var myVar = document.createElement("<form>");
+    var myVar2 = document.createElement("<input>  id = Option-1")
+    var myVar3 = document.createElement("<input> id = Option-2");
+    var myvar4 = document.createElement("<input> id = Option-3");
+    var myvar5 = document.createElement("<input> id = Option-4");
+    var myvar6= document.createElement("/<form>");
+
+    
     if (questionsIndex < questionsArray.length) {
         for (var i = 0; i < answersArrayLength; i++) {
 
             answerOptions.push(
-                '<form>'
-                    '<input type="radio" name="possibleAnswers">' 
-                    '<input>' 
-                          questionsArray[QuestionsIndex].answers[i]
-                 '</form>'
+
+                questionsArray[QuestionsIndex].answers[i]
+            
+            
             );
             // Q & A's  are  to be displayed on the user's display.
             Display.push(
@@ -86,7 +93,7 @@ function getQuestion() {
             )
         }
         questionsIndex++;
-        createQuizEl.innerHTML= Display.join(); 
+        createQuizEl.innerHTML = Display.join();
     }
 }
 
@@ -103,9 +110,10 @@ document.body.appendChild(btn);               // Append <button> to <body>
 
 
 
+
 function optionClicked() {
     // Penalize the incorrect answer to the question.
-    if (
+ 
 
     // Increase the question index and also check if the number of questions is exhausted.
 
@@ -113,7 +121,7 @@ function optionClicked() {
             getQuestion();
         else
             EndQuiz();
-}      
+}
 
 
 
@@ -125,29 +133,33 @@ function EndQuiz() {
     var Score = 0; // count of answers correct.
     //hide questions Element
     // Display the final score and time.
-}for (var i=0; i < questionsArray.length; i++){
-    userResponse = (resultsEl[i].querySelector("input[name=possibleAnswers;+i+]:checked').value;
+} for (var i = 0; i < questionsArray.length; i++) {
+    userResponse = (resultsEl[i].querySelector("#Option-1").checked = true;
 }
 
 // if answer incorrect, penalise time.
 
-if (userResponse!== questionsArray[i].answerId)
+if (userResponse !== questionsArray[i].answerId)
     time -= 10;
 
 // answer is correct, update score. P
-else Score++;
+else {
+    Score++;
+    time--;
+}
+
 
 function saveHighScore() {
     // Update the HighScore list.   
     var localStorage.getItem("High Score");
-  //   <form>
- // <label for="Initials">Initials</label><br>
- // <input type="text" id="Initials" name="Initials"><br>
- // </form>
- 
+    //   <form>
+    // <label for="Initials">Initials</label><br>
+    // <input type="text" id="Initials" name="Initials"><br>
+    // </form>
 
-if (score > HighScore)
-   localStorage.setItem(HighScore, input.ini);
+
+    if (score > HighScore)
+        localStorage.setItem(HighScore, input.ini);
 
 
 }
