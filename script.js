@@ -2,7 +2,7 @@
 
 var questionsArray = [
     {
-        questionText: "Commonly used data types DO NOT inlude:",
+        questionText: "Commonly used data types DO NOT include:",
         answers: ["alerts", "booleans", "numbers", "strings"],
         answerId: 0
     },
@@ -31,35 +31,39 @@ var questionsArray = [
 //basic variables
 var questionsIndex = 0;
 var time = questionsArray.length * 20;  // the user has 20 seconds to answer the question.
-
+var interval;
 // var secondsElapsed = 0;
 
 // targeted HTML elements.
-var createQuizEl = document.querySelector("create-quiz");
-var resultsEl = document.querySelector("results");
-var startquizEl = document.querySelector(start - quiz);
+// var createQuizEl = document.querySelector("#create-quiz");
+var resultsEl = document.querySelector("#results");
+var timeEL = document.querySelector("#time-left");
 
 
 function StartQuiz() {
     // hide the start screen.
 
-    // present  the questions to the user.
-    // start the timer.
-    var interval = setInterval(UpdateTimer, 1000);  // Needed for ustilizing the setInterval & clearInterval functions.
-    getQuestion();
-};
+    if (questionsIndex < questionsArray.length) {
 
+        // start the timer.
+        timeEL.innerHTML = time; // Update the timer  on the user's display.
+
+        interval = setInterval(UpdateTimer, 1000);  // Needed for ustilizing the setInterval & clearInterval functions.
+        getQuestion(); // present  the first question to the user.
+    };
+}
 
 function UpdateTimer() {
     // update the time left.
 
 
     // End the quiz if time  <= 0 
-    if (time <= 0)
+    if (time <= 0) {
         EndQuiz();
-    else
+    } else {
         // model 1 second has elapsed from the timer.
         time--;
+    }
 }
 
 function getQuestion() {
@@ -68,6 +72,15 @@ function getQuestion() {
     var answerOptions;
     var Display = [];
     var answersArrayLength = 4;
+
+    // Present the question to the user.
+    if (questionsIndex < questionsArray.length) {
+        var Question = document.createElement("p");
+        Question.setAttribute("id", "Question");
+        Question.innerHTML = questionsArray[questionsIndex].questionText; // Retrieve and display the current question.
+        document.body.appendChild(Question);
+        questionsIndex++;
+    }
     // Creating HTML form with radio buttons in order to validate and then store user data.
     var form = document.createElement("form");
     var button1 = document.createElement("button");
@@ -78,146 +91,120 @@ function getQuestion() {
     button2.setAttribute("id", "Option-2");
     button3.setAttribute("id", "Option-3");
     button4.setAttribute("id", "Option-4");
+    button1.textContent = questionsArray[questionsIndex].answers[0];
+    button2.textContent = questionsArray[questionsIndex].answers[1];
+    button3.textContent = questionsArray[questionsIndex].answers[2];
+    button4.textContent = questionsArray[questionsIndex].answers[3];
     form.appendChild(button1);
     form.appendChild(button2);
     form.appendChild(button3);
     form.appendChild(button4);
     document.body.appendChild(form);
 
-    if (questionsIndex < questionsArray.length) {
-        for (var i = 0; i < answersArrayLength; i++) {
-
-            var Question = document.createElement("p");
-            Question.setAttribute("id", "Question");
-            Question.appendChild(Question);
-            var qtext = document.querySelector("#Question")
-            qtext.innerHTML = questionsArray[questionsIndex].questionText;
-
-
-
-
-
-            /*  
-              questionsArray[QuestionsIndex].answers[i]
-   
-           // Q & A's  are  to be displayed on the user's display.
-           Display.push(
-               '<div>' + 'questionsArray[QuestionsIndex].questionText' + '</div>'
-               + '<div>' + answerOptions.join('') + '</div>'
-           )
-       }
-
-       */
-
-            questionsIndex++;
-            createQuizEl.innerHTML = Display.join();
-        }
-    }
-
 
     // Present answer choices to the user using a for loop.
     // Create a button and append  to the html element.
     // upon  the choice   event being triggered, call the optionClicked() function.
     var btn = document.createElement("BUTTON");   // Create a <button> element
-    for (j = 0; j < questionsArray[questionsIndex].answers.length; j++)
-        btn.innerHTML = questionsArray[questionsIndex].answers[j];             // Insert Answer option.
-    document.body.appendChild(btn);               // Append <button> to <body>
+    for (j = 0; j < questionsArray[questionsIndex].answers.length; j++) {
+        document.body.appendChild(btn);               // Append <button> to <body>
+        // Render question answers on the corresponding buttons.
+        button1.textcontent = questionsArray[questionsIndex].answers[j]; // Insert Answer option.
+
+        // Setup event listeners for the created buttons.
+        var button1El = document.querySelector("#Option-1").addEventListener("click", optionClicked("button1"));
+        var button2El = document.querySelector("#Option-2").addEventListener("click", OptionClicked("button2"));
+        var button3El = document.querySelector("#Option-3").addEventListener("click", OptionClicked("button3"));
+        var button4El = document.querySelector("#Option-4").addEventListener("click", OptionClicked("button4"));
+    }
+}
 
 
 
-
-
-
-    function optionClicked() {
-        // Penalize the incorrect answer to the question.
-        for (var i = 0; i < questionsArray.length; i++) {
-            if ((button1.checked == true) && (questionsArray[i].answerId) === 1){
-                Score++;
-            }
-            if ((button2.checked == true) && (questionsArray[i].answerId === 2)){
-                Score++;
-            }
-            if ((button3.checked == true) && (questionsArray[i].answerId === 3)) {
-                Score++;
-            }
-            if ((button4.checked == true) && (questionsArray[i].answerId === 4)){
-                Score++;
-            }
-            else {
-                // answer incorrect, penalise the user.
-                time -= 10;
-            }
-            // Increase the question index and also check if the number of questions is exhausted.
-
-            if (++questionsIndex < questionsArray.length){
-                getQuestion();
-            }
-            else{
-                EndQuiz();
-        }   }
-
-
-
-        function EndQuiz() {
-            // stop the timer.
-            clearInterval(interval);
-            //show end screen.
-            var userResponse = '';
-            var Score = 0; // count of answers correct.
-            //hide questions Element
-            // Display the final score and time.
-        }
-
-        // if answer incorrect, penalise time.
-
-        if (userResponse !== questionsArray[i].answerId)
-            time -= 10;
-
-        // answer is correct, update score. P
-        else {
+function optionClicked(btn) {
+    // Penalize the incorrect answer to the question.
+    for (var i = 0; i < questionsArray.length; i++) {
+        if ((btn == "button1") && (questionsArray[i].answerId) === 1) {
             Score++;
-            time--;
         }
-
-
-        function saveHighScore() {
-            // Update the HighScore list.   
-            var localStorage;
-            
-            localStorage.getItem("High Score");
-            //   <form>
-            // <label for="Initials">Initials</label><br>
-            // <input type="text" id="Initials" name="Initials"><br>
-            // </form>
-
-
-            if (score > HighScore)
-            // Enter  High Score
-            var hsform = document.createElement("form");
-            var username = document.createElement("input");
-            hsform.appendChild(input);
-            document.body.appendchild(hsform);
-            document.body.appendChild(form);
-            localStorage.setItem(HighScore, Initals);
-
-
+        else if ((btn == "button2") && (questionsArray[i].answerId === 2)) {
+            Score++;
         }
+        else if ((btn == "button3") && (questionsArray[i].answerId === 3)) {
+            Score++;
+        }
+        else if ((btn == "button4") && (questionsArray[i].answerId === 4)) {
+            Score++;
+        }
+        else {
+            // answer incorrect, penalise the user.
+            time -= 10;
+        }
+        // Increase the question index and also check if the number of questions is exhausted.
 
-        // Event Handlers
+        if (questionsIndex < questionsArray.length) {
+            getQuestion();
+        }
+        else {
+            EndQuiz();
+        }
+    }
+}
 
-        startQuizEl.addEventListener("click", StartQuiz);
-        button1.addEventListener("click", function(){
-            button1.checked = true;
-        }
-        button2.addEventListener("click", function(){
-            button2.checked = true;
-        }
-        button3.addEventListener("click", function(){
-            button3.checked = true;
-        }
-        button4.addEventListener("click", function(){
-            button4.checked = true;
-        }
+
+
+function EndQuiz() {
+    // stop the timer.
+    clearInterval(interval);
+    //show end screen.
+    var userResponse = '';
+    var Score = 0; // count of answers correct.
+    //hide questions Element
+    // Display the final score and time.
+
+
+    // if answer incorrect, penalise time.
+    var hs = JSON.parse(localStorage.getItem("dhigh score"));
+    if ((hs !== null) && (score > hs)) {
+        saveHighScore(Score);
+    } else {
+        // Display the final score.
+        displayFinalScore(Score);
+    }
+
+}
+
+function displayFinalScore(Score) {
+    var finalScore = document.createElement("p");
+    finalScore.setAttribute("id", "finalScore");
+    document.body.appendChild(finalScore);
+    Question.innerHTML = "Your final score was: " + Score;
+    questionsIndex++;
+
+}
+
+
+function saveHighScore(Score) {
+    // Update the HighScore list.   
+
+    // <label for="Initials">Initials</label><br>
+    // <input type="text" id="Initials" name="Initials"><br>
+    // </form>
+
+    var hsform = document.createElement("form");
+    var username = document.createElement("input");
+    hsform.appendChild(username);
+    document.body.appendChild(hsform);
+    localStorage.setItem("high score", JSON.stringify(score));
+}
+
+
+
+
+// Event Handlers
+var startquizEl = document.querySelector("#startQuiz").addEventListener("click", StartQuiz);
+
+
 
 
 
