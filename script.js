@@ -30,6 +30,7 @@ var questionsArray = [
 
 //basic variables
 var questionsIndex = 0;
+var Score = 0;
 var time = questionsArray.length * 20;  // the user has 20 seconds to answer the question.
 var interval;
 // var secondsElapsed = 0;
@@ -47,10 +48,11 @@ function StartQuiz() {
 
         // start the timer.
         timeEL.innerHTML = time; // Update the timer  on the user's display.
-
+        getQuestion(); // get next question.
         interval = setInterval(UpdateTimer, 1000);  // Needed for ustilizing the setInterval & clearInterval functions.
-        getQuestion(); // present  the first question to the user.
+        //      getQuestion(); // present  the first question to the user.
     };
+      
 }
 
 function UpdateTimer() {
@@ -63,8 +65,10 @@ function UpdateTimer() {
     } else {
         // model 1 second has elapsed from the timer.
         time--;
+
     }
 }
+
 
 function getQuestion() {
     // Retrieve the current question from the questions array.
@@ -79,8 +83,8 @@ function getQuestion() {
         Question.setAttribute("id", "Question");
         Question.innerHTML = questionsArray[questionsIndex].questionText; // Retrieve and display the current question.
         document.body.appendChild(Question);
-        questionsIndex++;
-    }
+       
+    
     // Creating HTML form with radio buttons in order to validate and then store user data.
     var form = document.createElement("form");
     var button1 = document.createElement("button");
@@ -91,65 +95,70 @@ function getQuestion() {
     button2.setAttribute("id", "Option-2");
     button3.setAttribute("id", "Option-3");
     button4.setAttribute("id", "Option-4");
+    
     button1.textContent = questionsArray[questionsIndex].answers[0];
     button2.textContent = questionsArray[questionsIndex].answers[1];
     button3.textContent = questionsArray[questionsIndex].answers[2];
     button4.textContent = questionsArray[questionsIndex].answers[3];
+
     form.appendChild(button1);
     form.appendChild(button2);
     form.appendChild(button3);
     form.appendChild(button4);
     document.body.appendChild(form);
-
+    
 
     // Present answer choices to the user using a for loop.
     // Create a button and append  to the html element.
     // upon  the choice   event being triggered, call the optionClicked() function.
-    var btn = document.createElement("BUTTON");   // Create a <button> element
-    for (j = 0; j < questionsArray[questionsIndex].answers.length; j++) {
-        document.body.appendChild(btn);               // Append <button> to <body>
-        // Render question answers on the corresponding buttons.
-        button1.textcontent = questionsArray[questionsIndex].answers[j]; // Insert Answer option.
 
-        // Setup event listeners for the created buttons.
-        var button1El = document.querySelector("#Option-1").addEventListener("click", optionClicked("button1"));
-        var button2El = document.querySelector("#Option-2").addEventListener("click", OptionClicked("button2"));
-        var button3El = document.querySelector("#Option-3").addEventListener("click", OptionClicked("button3"));
-        var button4El = document.querySelector("#Option-4").addEventListener("click", OptionClicked("button4"));
+    // Setup event listeners for the created buttons.
+    var button1El = document.querySelector("#Option-1").addEventListener("click", optionClicked("button1"));
+    var button2El = document.querySelector("#Option-2").addEventListener("click", optionClicked("button2"));
+    var button3El = document.querySelector("#Option-3").addEventListener("click", optionClicked("button3"));
+    var button4El = document.querySelector("#Option-4").addEventListener("click", optionClicked("button4"));
     }
+    questionsIndex++;
 }
+
 
 
 
 function optionClicked(btn) {
     // Penalize the incorrect answer to the question.
-    for (var i = 0; i < questionsArray.length; i++) {
-        if ((btn == "button1") && (questionsArray[i].answerId) === 1) {
-            Score++;
-        }
-        else if ((btn == "button2") && (questionsArray[i].answerId === 2)) {
-            Score++;
-        }
-        else if ((btn == "button3") && (questionsArray[i].answerId === 3)) {
-            Score++;
-        }
-        else if ((btn == "button4") && (questionsArray[i].answerId === 4)) {
-            Score++;
-        }
-        else {
-            // answer incorrect, penalise the user.
-            time -= 10;
-        }
-        // Increase the question index and also check if the number of questions is exhausted.
+    if (questionsIndex < questionsArray.length){
+    if ((btn === "button1") && (questionsArray[questionsIndex].answerId) === 1) {
+        Score++;
+    }
+    else if ((btn === "button2") && (questionsArray[questionsIndex].answerId === 2)) {
+        Score++;
+    }
+    else if ((btn === "button3") && (questionsArray[questionsIndex].answerId === 3)) {
+        Score++;
+    }
+    else if ((btn === "button4") && (questionsArray[questionsIndex].answerId === 4)) {
+        Score++;
+    }
+    else {
+        // answer incorrect, penalise the user.
+        time -= 10;
+       
+    }
 
-        if (questionsIndex < questionsArray.length) {
-            getQuestion();
-        }
-        else {
-            EndQuiz();
-        }
+    questionsIndex++; 
+    }
+    // Increase the question index and also check if the number of questions is exhausted.
+    // Emptying the DOM.
+   //  document.removeChild(document.documentElement);
+
+    if (questionsIndex < questionsArray.length) {
+        getQuestion();
+    }
+    else {
+        EndQuiz();
     }
 }
+
 
 
 
@@ -177,10 +186,8 @@ function EndQuiz() {
 function displayFinalScore(Score) {
     var finalScore = document.createElement("p");
     finalScore.setAttribute("id", "finalScore");
+    finalScore.innerHTML = "Your final score was: " + Score;
     document.body.appendChild(finalScore);
-    Question.innerHTML = "Your final score was: " + Score;
-    questionsIndex++;
-
 }
 
 
